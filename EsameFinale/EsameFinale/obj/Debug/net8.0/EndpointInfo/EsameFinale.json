@@ -1,0 +1,71 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "EsameFinale",
+    "version": "1.0"
+  },
+  "paths": {
+    "/playlist": {
+      "get": {
+        "tags": [
+          "EsameFinale"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "EsameFinale"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Canzone"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Canzone": {
+        "type": "object",
+        "properties": {
+          "idCanzone": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "durata": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "titolo": {
+            "type": "string",
+            "nullable": true
+          },
+          "nomeAutore": {
+            "type": "string",
+            "nullable": true
+          },
+          "cognomeAutore": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}
