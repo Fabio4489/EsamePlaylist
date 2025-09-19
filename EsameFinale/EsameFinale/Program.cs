@@ -1,4 +1,6 @@
+using EsameFinale.Context;
 using EsameFinale.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.Eventing.Reader;
 using System.Xml;
 
@@ -7,57 +9,93 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+#region Configurazione del database SQL Lite
+builder.Services.AddDbContext<LibreriaContext>(
+        options => options.UseSqlite("Data Source=Libreria.db")
+    );
+
+builder.Services.AddCors();
+#endregion
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+#region Se non esiste il database, crealo!
+using (var scope = app.Services.CreateScope())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    var db = scope.ServiceProvider.GetRequiredService<LibreriaContext>();
+    db.Database.EnsureCreated();
 }
-var canzone1 = new Canzone { 
-    IdCanzone = 1, 
-    Durata = 210, 
-    Titolo = "La sera dei miracoli", 
-    NomeAutore = "Lucio", 
-    CognomeAutore = "Battisti" };
-var canzone2 = new Canzone { 
-    IdCanzone = 2, 
-    Durata = 185, 
-    Titolo = "Bocca di rosa", 
-    NomeAutore = "Fabrizio", 
-    CognomeAutore = "De André" };
-var canzone3 = new Canzone { 
-    IdCanzone = 3, 
-    Durata = 240, 
-    Titolo = "Blu" };
+#endregion
 
-// Creazione di un autore con la sua lista di canzoni
-var playlist = new Playlist
+#region Get tutte: 
+app.MapGet("/api/read/allPlaylist", async (LibreriaContext db) =>
 {
-    IdPlaylist = 100,
-    Titolo = "I classici italiani",
-    Autore = "Mario Rossi",
-    Elenco = new List<Canzone> { canzone1, canzone2, canzone3 }
-};
-
-
-app.MapGet("/api/vedi/playlist", () =>
-{
-    return Results.Ok(playlist);
+    var elenco = await db.Playlists.ToListAsync();
+    return Results.Ok(elenco);
 })
 .WithOpenApi();
 
-app.MapPost("/api/aggiungi/canzone", (Canzone c) =>
+app.MapGet("/api/read/allSongs", async (LibreriaContext db) =>
 {
-    if (string.IsNullOrWhiteSpace(c.Titolo) || c.Durata == 0)
-        return Results.BadRequest();
-    c.IdCanzone = playlist.Elenco.Count + 1;
-    playlist.Elenco.Add(c);
+    var elenco = await db.Canzoni.ToListAsync();
+    return Results.Ok(elenco);
+})
+.WithOpenApi();
+#endregion
+
+#region Get solo una:
+
+app.MapGet("/api/read/playlist/{id}", async (int id, LibreriaContext db) =>
+{
+    var playlist = await db.Playlists
+            .Include(p => p.Elenco)
+            .FirstOrDefaultAsync(p => p.IdPlaylist == id);
+
+    if (playlist == null)
+        return Results.NotFound();
+
     return Results.Ok(playlist);
 
 })
 .WithOpenApi();
 
+app.MapGet("/api/read/song/{id}", async (int id, LibreriaContext db) =>
+{
+    Canzone? c = await db.Canzoni.FindAsync(id);
+    if (c == null)
+    {
+        return Results.NotFound();
+    }
+    return Results.Ok(c);
+})
+.WithOpenApi();
+
+#endregion
+
+#region Post:
+app.MapPost("/api/create/playlist", async (LibreriaContext db, Playlist p) =>
+{
+    db.Playlists.Add(p);
+    await db.SaveChangesAsync();
+    return Results.Created($"/api/read/onePlaylist/{p.IdPlaylist}", p);
+})
+.WithOpenApi();
+
+app.MapPost("/api/create/song", async (LibreriaContext db, Canzone c) =>
+{
+    if (!await db.Playlists.AnyAsync(p => p.IdPlaylist == c.PlaylistId))
+        return Results.BadRequest("Categoria inesistente");
+
+    db.Canzoni.Add(c);
+    await db.SaveChangesAsync();
+    return Results.Created($"api/read/oneSong/{c.IdCanzone}", c);
+})
+.WithOpenApi();
+
+#endregion
+
+app.UseCors(builder =>
+    builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader()
+    );
 
 app.Run();

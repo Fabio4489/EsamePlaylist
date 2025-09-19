@@ -5,7 +5,7 @@
     "version": "1.0"
   },
   "paths": {
-    "/playlist": {
+    "/api/read/allPlaylist": {
       "get": {
         "tags": [
           "EsameFinale"
@@ -15,7 +15,89 @@
             "description": "OK"
           }
         }
-      },
+      }
+    },
+    "/api/read/allSongs": {
+      "get": {
+        "tags": [
+          "EsameFinale"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/read/playlist/{id}": {
+      "get": {
+        "tags": [
+          "EsameFinale"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/read/song/{id}": {
+      "get": {
+        "tags": [
+          "EsameFinale"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/create/playlist": {
+      "post": {
+        "tags": [
+          "EsameFinale"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Playlist"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/create/song": {
       "post": {
         "tags": [
           "EsameFinale"
@@ -61,6 +143,35 @@
           },
           "cognomeAutore": {
             "type": "string",
+            "nullable": true
+          },
+          "playlistId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Playlist": {
+        "type": "object",
+        "properties": {
+          "idPlaylist": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "titolo": {
+            "type": "string",
+            "nullable": true
+          },
+          "autore": {
+            "type": "string",
+            "nullable": true
+          },
+          "elenco": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Canzone"
+            },
             "nullable": true
           }
         },
