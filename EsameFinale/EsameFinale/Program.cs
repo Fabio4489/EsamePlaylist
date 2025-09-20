@@ -81,18 +81,56 @@ app.MapPost("/api/create/playlist", async (LibreriaContext db, Playlist p) =>
 })
 .WithOpenApi();
 
-app.MapPost("/api/create/song", async (LibreriaContext db, Canzone c) =>
+app.MapPost("/api/create/song", async (LibreriaContext db, Canzone c)  =>
 {
-    if (!await db.Playlists.AnyAsync(p => p.IdPlaylist == c.PlaylistId))
-        return Results.BadRequest("Categoria inesistente");
+    if (c.PlaylistId != null)
+    {
+        if (!await db.Playlists.AnyAsync(p => p.IdPlaylist == c.PlaylistId))
+            return Results.BadRequest("Playlist inesistente");
+    }
 
     db.Canzoni.Add(c);
     await db.SaveChangesAsync();
-    return Results.Created($"api/read/oneSong/{c.IdCanzone}", c);
+
+    return Results.Created($"/api/read/song/{c.IdCanzone}", c);
 })
 .WithOpenApi();
 
 #endregion
+
+#region Delete:
+app.MapDelete("/api/delete/playlist/{id}", async (int id, LibreriaContext db) =>
+{
+    var playlist = await db.Playlists
+            .FirstOrDefaultAsync(p => p.IdPlaylist == id);
+
+    if (playlist == null)
+        return Results.NotFound();
+
+    db.Playlists.Remove(playlist);
+    await db.SaveChangesAsync();
+
+    return Results.Ok("Playlist cancellata con successo.");
+})
+.WithOpenApi();
+
+app.MapDelete("/api/delete/song/{id}", async (int id, LibreriaContext db) =>
+{
+    var canzone = await db.Canzoni
+            .FirstOrDefaultAsync(p => p.IdCanzone == id);
+
+    if (canzone == null)
+        return Results.NotFound();
+
+    db.Canzoni.Remove(canzone);
+    await db.SaveChangesAsync();
+
+    return Results.Ok("Canzone cancellata con successo.");
+})
+.WithOpenApi();
+#endregion
+
+
 
 app.UseCors(builder =>
     builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader()
