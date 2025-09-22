@@ -5,7 +5,7 @@
     "version": "1.0"
   },
   "paths": {
-    "/api/read/allPlaylist": {
+    "/api/read/playlist": {
       "get": {
         "tags": [
           "EsameFinale"
@@ -17,7 +17,7 @@
         }
       }
     },
-    "/api/read/allSongs": {
+    "/api/read/songs": {
       "get": {
         "tags": [
           "EsameFinale"
@@ -118,6 +118,118 @@
           }
         }
       }
+    },
+    "/api/delete/playlist/{id}": {
+      "delete": {
+        "tags": [
+          "EsameFinale"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/delete/song/{id}": {
+      "delete": {
+        "tags": [
+          "EsameFinale"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/update/playlist/{id}": {
+      "put": {
+        "tags": [
+          "EsameFinale"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Playlist"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/update/song/{id}": {
+      "put": {
+        "tags": [
+          "EsameFinale"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Canzone"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -147,7 +259,8 @@
           },
           "playlistId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           }
         },
         "additionalProperties": false

@@ -1,18 +1,14 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\fabio\\Desktop\\EsamePace\\EsamePlaylist\\EsameFinale\\",
+  "WorkspaceRootPath": "C:\\Users\\admin\\Desktop\\EsamePace\\EsameFinale\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{4192363E-469B-45E8-BEC4-0F800FD15759}|EsameFinale\\EsameFinale.csproj|c:\\users\\fabio\\desktop\\esamepace\\esameplaylist\\esamefinale\\esamefinale\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{4192363E-469B-45E8-BEC4-0F800FD15759}|EsameFinale\\EsameFinale.csproj|c:\\users\\admin\\desktop\\esamepace\\esamefinale\\esamefinale\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{4192363E-469B-45E8-BEC4-0F800FD15759}|EsameFinale\\EsameFinale.csproj|solutionrelative:esamefinale\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{4192363E-469B-45E8-BEC4-0F800FD15759}|EsameFinale\\EsameFinale.csproj|c:\\users\\fabio\\desktop\\esamepace\\esameplaylist\\esamefinale\\esamefinale\\models\\playlist.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{4192363E-469B-45E8-BEC4-0F800FD15759}|EsameFinale\\EsameFinale.csproj|c:\\users\\admin\\desktop\\esamepace\\esamefinale\\esamefinale\\models\\playlist.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{4192363E-469B-45E8-BEC4-0F800FD15759}|EsameFinale\\EsameFinale.csproj|solutionrelative:esamefinale\\models\\playlist.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4192363E-469B-45E8-BEC4-0F800FD15759}|EsameFinale\\EsameFinale.csproj|c:\\users\\fabio\\desktop\\esamepace\\esameplaylist\\esamefinale\\esamefinale\\context\\libreriacontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4192363E-469B-45E8-BEC4-0F800FD15759}|EsameFinale\\EsameFinale.csproj|solutionrelative:esamefinale\\context\\libreriacontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,30 +18,17 @@
       "DocumentGroups": [
         {
           "DockedHeight": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 1,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "LibreriaContext.cs",
-              "DocumentMoniker": "C:\\Users\\fabio\\Desktop\\EsamePace\\EsamePlaylist\\EsameFinale\\EsameFinale\\Context\\LibreriaContext.cs",
-              "RelativeDocumentMoniker": "EsameFinale\\Context\\LibreriaContext.cs",
-              "ToolTip": "C:\\Users\\fabio\\Desktop\\EsamePace\\EsamePlaylist\\EsameFinale\\EsameFinale\\Context\\LibreriaContext.cs",
-              "RelativeToolTip": "EsameFinale\\Context\\LibreriaContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAsAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-19T14:48:23.282Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "Playlist.cs",
-              "DocumentMoniker": "C:\\Users\\fabio\\Desktop\\EsamePace\\EsamePlaylist\\EsameFinale\\EsameFinale\\Models\\Playlist.cs",
+              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\EsamePace\\EsameFinale\\EsameFinale\\Models\\Playlist.cs",
               "RelativeDocumentMoniker": "EsameFinale\\Models\\Playlist.cs",
-              "ToolTip": "C:\\Users\\fabio\\Desktop\\EsamePace\\EsamePlaylist\\EsameFinale\\EsameFinale\\Models\\Playlist.cs",
+              "ToolTip": "C:\\Users\\admin\\Desktop\\EsamePace\\EsameFinale\\EsameFinale\\Models\\Playlist.cs",
               "RelativeToolTip": "EsameFinale\\Models\\Playlist.cs",
-              "ViewState": "AgIAAAUAAAAAAAAAAAAQwBUAAABHAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAA0AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-18T12:11:58.688Z",
               "EditorCaption": ""
@@ -54,11 +37,11 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\fabio\\Desktop\\EsamePace\\EsamePlaylist\\EsameFinale\\EsameFinale\\Program.cs",
+              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\EsamePace\\EsameFinale\\EsameFinale\\Program.cs",
               "RelativeDocumentMoniker": "EsameFinale\\Program.cs",
-              "ToolTip": "C:\\Users\\fabio\\Desktop\\EsamePace\\EsamePlaylist\\EsameFinale\\EsameFinale\\Program.cs",
+              "ToolTip": "C:\\Users\\admin\\Desktop\\EsamePace\\EsameFinale\\EsameFinale\\Program.cs",
               "RelativeToolTip": "EsameFinale\\Program.cs",
-              "ViewState": "AgIAAAsAAAAAAAAAAAAYwIQAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAABcAAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-18T11:59:11.019Z",
               "EditorCaption": ""

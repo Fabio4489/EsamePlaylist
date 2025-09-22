@@ -6,9 +6,9 @@ using System.Xml;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Aggiunge i servizi per Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 #region Configurazione del database SQL Lite
 builder.Services.AddDbContext<LibreriaContext>(
         options => options.UseSqlite("Data Source=Libreria.db")
@@ -19,6 +19,12 @@ builder.Services.AddCors();
 
 var app = builder.Build();
 
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
 #region Se non esiste il database, crealo!
 using (var scope = app.Services.CreateScope())
 {
@@ -28,17 +34,42 @@ using (var scope = app.Services.CreateScope())
 #endregion
 
 #region Get tutte: 
-app.MapGet("/api/read/allPlaylist", async (LibreriaContext db) =>
+app.MapGet("/api/read/playlist", async (LibreriaContext db) =>
 {
-    var elenco = await db.Playlists.ToListAsync();
-    return Results.Ok(elenco);
+    var tuttePlaylist = await db.Playlists
+        .Include(p => p.Elenco)
+        .ToListAsync();
+
+    var result = tuttePlaylist.Select(p => new
+    {
+        Titolo = p.Titolo,
+        Autore = p.Autore,
+        Elenco = p.Elenco.Select(c => new
+        {
+            Titolo = c.Titolo,
+            Durata = c.Durata,
+            Nome = c.NomeAutore,
+            Cognome = c.CognomeAutore
+        }).ToList()
+    });
+
+return Results.Ok(result);
 })
 .WithOpenApi();
 
-app.MapGet("/api/read/allSongs", async (LibreriaContext db) =>
+app.MapGet("/api/read/songs", async (LibreriaContext db) =>
 {
     var elenco = await db.Canzoni.ToListAsync();
-    return Results.Ok(elenco);
+
+    var result = elenco.Select(c => new
+    {
+        Titolo = c.Titolo,
+        Durata = c.Durata,
+        Nome = c.NomeAutore,
+        Cognome = c.CognomeAutore
+    });
+
+    return Results.Ok(result);
 })
 .WithOpenApi();
 #endregion
@@ -51,10 +82,24 @@ app.MapGet("/api/read/playlist/{id}", async (int id, LibreriaContext db) =>
             .Include(p => p.Elenco)
             .FirstOrDefaultAsync(p => p.IdPlaylist == id);
 
-    if (playlist == null)
-        return Results.NotFound();
+    if (playlist != null)
+    {
+        var result = new
+        {
+            Titolo = playlist.Titolo,
+            Autore = playlist.Autore,
+            Elenco = playlist.Elenco.Select(c => new
+            {
+                Titolo = c.Titolo,
+                Durata = c.Durata,
+                Nome = c.NomeAutore,
+                Cognome = c.CognomeAutore
+            }).ToList()
+        };
 
-    return Results.Ok(playlist);
+        return Results.Ok(result);
+    }
+    return Results.NotFound();
 
 })
 .WithOpenApi();
@@ -62,11 +107,19 @@ app.MapGet("/api/read/playlist/{id}", async (int id, LibreriaContext db) =>
 app.MapGet("/api/read/song/{id}", async (int id, LibreriaContext db) =>
 {
     Canzone? c = await db.Canzoni.FindAsync(id);
-    if (c == null)
+    if (c != null)
     {
-        return Results.NotFound();
+        var result = new
+        {
+            Titolo = c.Titolo,
+            Durata = c.Durata,
+            Nome = c.NomeAutore,
+            Cognome = c.CognomeAutore
+        };
+
+        return Results.Ok(result);
     }
-    return Results.Ok(c);
+    return Results.NotFound();
 })
 .WithOpenApi();
 
@@ -77,22 +130,42 @@ app.MapPost("/api/create/playlist", async (LibreriaContext db, Playlist p) =>
 {
     db.Playlists.Add(p);
     await db.SaveChangesAsync();
-    return Results.Created($"/api/read/onePlaylist/{p.IdPlaylist}", p);
+    if (p != null)
+    {
+        var result = new
+        {
+            Id = p.IdPlaylist,
+            Titolo = p.Titolo,
+            Autore = p.Autore,
+            Elenco = p.Elenco.Select(c => new
+            {
+                Titolo = c.Titolo,
+                Durata = c.Durata,
+                Nome = c.NomeAutore,
+                Cognome = c.CognomeAutore
+            }).ToList()
+        };
+        return Results.Created($"/api/read/onePlaylist/{result.Id}", result);
+    }
+
+    return Results.NotFound();
+
 })
 .WithOpenApi();
 
 app.MapPost("/api/create/song", async (LibreriaContext db, Canzone c)  =>
 {
-    if (c.PlaylistId != null)
-    {
-        if (!await db.Playlists.AnyAsync(p => p.IdPlaylist == c.PlaylistId))
-            return Results.BadRequest("Playlist inesistente");
-    }
-
     db.Canzoni.Add(c);
     await db.SaveChangesAsync();
-
-    return Results.Created($"/api/read/song/{c.IdCanzone}", c);
+    var result = new
+    {
+        Id = c.IdCanzone,
+        Titolo = c.Titolo,
+        Durata = c.Durata,
+        Nome = c.NomeAutore,
+        Cognome = c.CognomeAutore
+    };
+    return Results.Created($"/api/read/song/{result.Id}", result);
 })
 .WithOpenApi();
 
@@ -130,7 +203,78 @@ app.MapDelete("/api/delete/song/{id}", async (int id, LibreriaContext db) =>
 .WithOpenApi();
 #endregion
 
+#region Update:
 
+app.MapPut("/api/update/playlist/{id}", async (int id, LibreriaContext db, Playlist pAggiorna) =>
+{
+    var playlist = await db.Playlists
+        .Include(p => p.Elenco)
+        .FirstOrDefaultAsync(p => p.IdPlaylist == id);
+
+    if (playlist == null)
+        return Results.NotFound();
+
+    playlist.Titolo = pAggiorna.Titolo;
+    playlist.Autore = pAggiorna.Autore;
+
+    playlist.Elenco.Clear();
+
+    foreach (var canzone in pAggiorna.Elenco)
+    {
+        var canzoneEsistente = await db.Canzoni.FindAsync(canzone.IdCanzone);
+        if (canzoneEsistente != null)
+        {
+            playlist.Elenco.Add(canzoneEsistente);
+        }
+    }
+
+    await db.SaveChangesAsync();
+
+    var result = new
+    {
+        Titolo = playlist.Titolo,
+        Autore = playlist.Autore,
+        Elenco = playlist.Elenco.Select(c => new
+        {
+            Titolo = c.Titolo,
+            Durata = c.Durata,
+            Nome = c.NomeAutore,
+            Cognome = c.CognomeAutore
+        }).ToList()
+    };
+
+    return Results.Ok(result);
+})
+.WithOpenApi();
+
+app.MapPut("/api/update/song/{id}", async (int id, LibreriaContext db, Canzone cAggiorna) =>
+{
+    var c = await db.Canzoni
+            .FirstOrDefaultAsync(c => c.IdCanzone == id);
+
+    if (c == null)
+        return Results.NotFound();
+
+    c.Durata = cAggiorna.Durata;
+    c.Titolo = cAggiorna.Titolo;
+    c.NomeAutore = cAggiorna.NomeAutore;
+    c.CognomeAutore = cAggiorna.CognomeAutore;
+    c.PlaylistId = cAggiorna.PlaylistId;
+    await db.SaveChangesAsync();
+
+    var result = new
+    {
+        Titolo = c.Titolo,
+        Durata = c.Durata,
+        Nome = c.NomeAutore,
+        Cognome = c.CognomeAutore
+    };
+
+    return Results.Ok(result);
+})
+.WithOpenApi();
+
+#endregion
 
 app.UseCors(builder =>
     builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader()

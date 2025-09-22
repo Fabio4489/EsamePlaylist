@@ -19,9 +19,7 @@ namespace EsameFinale.Models
         public int Durata { get; set; }
         public string Titolo { get; set; } = null!;
         public string NomeAutore { get; set; } = "Non riconosciuto";
-        public string CognomeAutore { get; set; } = "Non riconosciuto";
+        public string CognomeAutore { get; set; } = "";
         public int? PlaylistId { get; set; }
-        public Playlist? Playlist { get; set; }
     }
-
 }
