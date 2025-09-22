@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\admin\\Desktop\\EsamePace\\EsameFinale\\EsameFinale\\EsameFinale.csproj": {}
+    "C:\\Users\\fabio\\Desktop\\EsamePace\\EsamePlaylist\\EsameFinale\\EsameFinale\\EsameFinale.csproj": {}
   },
   "projects": {
-    "C:\\Users\\admin\\Desktop\\EsamePace\\EsameFinale\\EsameFinale\\EsameFinale.csproj": {
+    "C:\\Users\\fabio\\Desktop\\EsamePace\\EsamePlaylist\\EsameFinale\\EsameFinale\\EsameFinale.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\admin\\Desktop\\EsamePace\\EsameFinale\\EsameFinale\\EsameFinale.csproj",
+        "projectUniqueName": "C:\\Users\\fabio\\Desktop\\EsamePace\\EsamePlaylist\\EsameFinale\\EsameFinale\\EsameFinale.csproj",
         "projectName": "EsameFinale",
-        "projectPath": "C:\\Users\\admin\\Desktop\\EsamePace\\EsameFinale\\EsameFinale\\EsameFinale.csproj",
-        "packagesPath": "C:\\Users\\admin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\admin\\Desktop\\EsamePace\\EsameFinale\\EsameFinale\\obj\\",
+        "projectPath": "C:\\Users\\fabio\\Desktop\\EsamePace\\EsamePlaylist\\EsameFinale\\EsameFinale\\EsameFinale.csproj",
+        "packagesPath": "C:\\Users\\fabio\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\fabio\\Desktop\\EsamePace\\EsamePlaylist\\EsameFinale\\EsameFinale\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\fabio\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -44,7 +44,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net8.0": {
@@ -88,7 +88,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

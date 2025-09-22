@@ -1,14 +1,13 @@
 using EsameFinale.Context;
 using EsameFinale.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics.Eventing.Reader;
-using System.Xml;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Aggiunge i servizi per Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 #region Configurazione del database SQL Lite
 builder.Services.AddDbContext<LibreriaContext>(
         options => options.UseSqlite("Data Source=Libreria.db")
@@ -74,7 +73,7 @@ app.MapGet("/api/read/songs", async (LibreriaContext db) =>
 .WithOpenApi();
 #endregion
 
-#region Get solo una:
+#region Get Filtro:
 
 app.MapGet("/api/read/playlist/{id}", async (int id, LibreriaContext db) =>
 {
