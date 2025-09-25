@@ -50,8 +50,11 @@ In seguito il progetto continua con l'implementazione, per ogni classe, delle op
     - Get di una Playlist specificata dall'`id`, con annesse le canzoni inserite nel suo elenco;
     - Get di una Canzone specificata dall'`id`;
 
-Ed ho applicato i `DTO`, così da andare a nascondere gli `id` ogni qual volta andiamo ad osservare i dati che ci arrivano dal `DB` (Get, Post, Put) (anche se, ora che non abbiamo
- il fornt end, ci servono per alcune azioni CRUD).
+In un vecchio commit si può vedere che ho applicato i `DTO`, così da andare a nascondere gli `id` ogni qual volta andiamo ad osservare i dati che ci arrivano dal `DB` (Get, Post, Put). 
+
+Solo che adesso(Sesto Commit), dato che gran parte degli end point lavorano per ID ho preferito togliere i DTO così da per poter lavorare in modo più chiaro e meno incasinato (altrimenti dovevo andare a tentativi sugli ID).
+
+### Due tecnologie
 
 Inoltre ho utilizzato 2 tecnologie: 
 - *DATABASE*: 
@@ -100,4 +103,357 @@ Nelle operazioni CRUD:
     // L'operazione deve essere Awayt-Async dato che ci devono arrivare le conferme o gli errori dal DB prima di poter dare delle risposte all'utente.
 ```
 
+- *OPENAPI*: 
+    Ho implementato questo pacchetto che mi ha permesso di lavorare anche senza postman.
 
+```csharp 
+    // Aggiungiamo i servizi per Swagger/OpenAPI
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen();
+```
+```csharp 
+    // Controlliamo se siamo in modalità sviluppo
+    if (app.Environment.IsDevelopment())
+    {
+        // Se si attiviamo Swagger e SwaggerUI (Interfaccia grafica)
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
+```
+---
+# Le risposte alle chiamate (in JSON, da swagger):
+
+
+- `POST` di una Playlist (`/api/create/playlist`): 
+```JSON
+// BODY di richiesta:
+{
+  "titolo": "FOGGIA",
+  "autore": "Tony Mezzagamba",
+  "elenco": [
+    {
+      "durata": 226,
+      "titolo": "Breezeblocks",
+      "nomeAutore": "alt-j",
+      "playlistId": 1
+    },
+    {
+      "durata": 112,
+      "titolo": "Please, Please, Please, Let Me Get What I Want - 2001 Remastered",
+      "nomeAutore": "The Smiths",
+      "playlistId": 1
+    },
+    {
+      "durata": 245,
+      "titolo": "There Is a Light That Never Goes Out - 2011 Remastered",
+      "nomeAutore": "The Smiths",
+      "playlistId": 1
+    }
+  ]
+}
+
+// Risposta: Status 201
+{
+  "idPlaylist": 1,
+  "titolo": "FOGGIA",
+  "autore": "Tony Mezzagamba",
+  "elenco": [
+    {
+      "idCanzone": 1,
+      "durata": 226,
+      "titolo": "Breezeblocks",
+      "nomeAutore": "alt-j",
+      "cognomeAutore": "",
+      "playlistId": 1
+    },
+    {
+      "idCanzone": 2,
+      "durata": 112,
+      "titolo": "Please, Please, Please, Let Me Get What I Want - 2001 Remastered",
+      "nomeAutore": "The Smiths",
+      "cognomeAutore": "",
+      "playlistId": 1
+    },
+    {
+      "idCanzone": 3,
+      "durata": 245,
+      "titolo": "There Is a Light That Never Goes Out - 2011 Remastered",
+      "nomeAutore": "The Smiths",
+      "cognomeAutore": "",
+      "playlistId": 1
+    }
+  ]
+}
+```
+
+- `POST` di una Canzone (`/api/create/song`): 
+```JSON
+// BODY di richiesta:
+{
+  "durata": 247,
+  "titolo": "Cinque Giorni",
+  "nomeAutore": "Michele",
+  "cognomeAutore": "Zarrillo",
+  "playlistId": 1
+}
+
+// Risposta: Status 201
+{
+  "idCanzone": 4,
+  "durata": 247,
+  "titolo": "Cinque Giorni",
+  "nomeAutore": "Michele",
+  "cognomeAutore": "Zarrillo",
+  "playlistId": 1
+}
+```
+---
+---
+---
+
+- `GET` di tutte le Playlisy (`/api/read/playlist`): 
+```JSON
+// Risposta: Status 200
+[
+  {
+    "idPlaylist": 1,
+    "titolo": "FOGGIA",
+    "autore": "Tony Mezzagamba",
+    "elenco": [
+      {
+        "idCanzone": 1,
+        "durata": 226,
+        "titolo": "Breezeblocks",
+        "nomeAutore": "alt-j",
+        "cognomeAutore": "",
+        "playlistId": 1
+      },
+      {
+        "idCanzone": 2,
+        "durata": 112,
+        "titolo": "Please, Please, Please, Let Me Get What I Want - 2001 Remastered",
+        "nomeAutore": "The Smiths",
+        "cognomeAutore": "",
+        "playlistId": 1
+      },
+      {
+        "idCanzone": 3,
+        "durata": 245,
+        "titolo": "There Is a Light That Never Goes Out - 2011 Remastered",
+        "nomeAutore": "The Smiths",
+        "cognomeAutore": "",
+        "playlistId": 1
+      },
+      {
+        "idCanzone": 4,
+        "durata": 247,
+        "titolo": "Cinque Giorni",
+        "nomeAutore": "Michele",
+        "cognomeAutore": "Zarrillo",
+        "playlistId": 1
+      }
+    ]
+  },
+  {
+    "idPlaylist": 2,
+    "titolo": "BAD Feeling",
+    "autore": "Luca Andreozzi",
+    "elenco": [
+      {
+        "idCanzone": 5,
+        "durata": 120,
+        "titolo": "La rosa e la penna",
+        "nomeAutore": "Non riconosciuto",
+        "cognomeAutore": "",
+        "playlistId": 2
+      }
+    ]
+  }
+]
+```
+- `GET` di tutte le Canzoni (`/api/read/songs`): 
+```JSON
+// Risposta: Status 200
+[
+  {
+    "idCanzone": 1,
+    "durata": 226,
+    "titolo": "Breezeblocks",
+    "nomeAutore": "alt-j",
+    "cognomeAutore": "",
+    "playlistId": 1
+  },
+  {
+    "idCanzone": 2,
+    "durata": 112,
+    "titolo": "Please, Please, Please, Let Me Get What I Want - 2001 Remastered",
+    "nomeAutore": "The Smiths",
+    "cognomeAutore": "",
+    "playlistId": 1
+  },
+  {
+    "idCanzone": 3,
+    "durata": 245,
+    "titolo": "There Is a Light That Never Goes Out - 2011 Remastered",
+    "nomeAutore": "The Smiths",
+    "cognomeAutore": "",
+    "playlistId": 1
+  },
+  {
+    "idCanzone": 4,
+    "durata": 247,
+    "titolo": "Cinque Giorni",
+    "nomeAutore": "Michele",
+    "cognomeAutore": "Zarrillo",
+    "playlistId": 1
+  },
+  {
+    "idCanzone": 5,
+    "durata": 120,
+    "titolo": "La rosa e la penna",
+    "nomeAutore": "Non riconosciuto",
+    "cognomeAutore": "",
+    "playlistId": 2
+  }
+]
+```
+
+---
+---
+---
+
+- `GET` di una Playlist specifica (`/api/read/playlist/2`): 
+```JSON
+// Risposta: Status 200
+{
+  "idPlaylist": 2,
+  "titolo": "BAD Feeling",
+  "autore": "Luca Andreozzi",
+  "elenco": [
+    {
+      "idCanzone": 5,
+      "durata": 120,
+      "titolo": "La rosa e la penna",
+      "nomeAutore": "Non riconosciuto",
+      "cognomeAutore": "",
+      "playlistId": 2
+    }
+  ]
+}
+```
+
+- `GET` di una Canzone specifica (`/api/read/song/2`): 
+```JSON
+// Risposta: Status 200
+{
+  "idCanzone": 3,
+  "durata": 245,
+  "titolo": "There Is a Light That Never Goes Out - 2011 Remastered",
+  "nomeAutore": "The Smiths",
+  "cognomeAutore": "",
+  "playlistId": 1
+}
+```
+---
+---
+---
+
+- `PUT` di una Playlist (`/api/update/playlist/2`): 
+```JSON
+// Prima della modifica
+{
+  "idPlaylist": 2,
+  "titolo": "BAD Feeling",
+  "autore": "Luca Andreozzi",
+  "elenco": [
+    {
+      "idCanzone": 4,
+      "durata": 247,
+      "titolo": "Cinque Giorni",
+      "nomeAutore": "Michele",
+      "cognomeAutore": "Zarrillo",
+      "playlistId": 2
+    }
+  ]
+}
+
+// BODY di richiesta:
+{
+  "titolo": "Colonna sonora di Foggia",
+  "autore": "Roberto Capone",
+  "elenco": [
+    {"idCanzone": 4},
+    {"idCanzone": 5}
+  ]
+}
+
+// Risposta: Status 200
+{
+  "idPlaylist": 2,
+  "titolo": "Colonna sonora di Foggia",
+  "autore": "Roberto Capone",
+  "elenco": [
+    {
+      "idCanzone": 4,
+      "durata": 247,
+      "titolo": "Cinque Giorni",
+      "nomeAutore": "Michele",
+      "cognomeAutore": "Zarrillo",
+      "playlistId": 2
+    },
+    {
+      "idCanzone": 5,
+      "durata": 226,
+      "titolo": "Del Verde",
+      "nomeAutore": "Calcutta",
+      "cognomeAutore": "",
+      "playlistId": 2
+    }
+  ]
+}
+```
+
+- `POST` di una Canzone (`/api/create/song/5`): 
+```JSON
+// Prima della modifica
+{
+    "idCanzone": 5,
+    "durata": 120,
+    "titolo": "La rosa e la penna",
+    "nomeAutore": "Non riconosciuto",
+    "cognomeAutore": "",
+    "playlistId": 2
+}
+// BODY di richiesta:
+{
+    "idCanzone": 5,
+    "durata": 226,
+    "titolo": "Del Verde",
+    "nomeAutore": "Calcutta",
+    "cognomeAutore": "",
+    "playlistId": 2
+}
+
+// Risposta: Status 200
+{
+  "idCanzone": 5,
+  "durata": 226,
+  "titolo": "Del Verde",
+  "nomeAutore": "Calcutta",
+  "cognomeAutore": "",
+  "playlistId": 2
+}
+```
+---
+---
+---
+- `DELETE` di una Playlist (`/api/delete/playlist/2`): 
+```JSON
+"Playlist cancellata con successo."
+// Ma non cancella le canzoni, le dissocia dalla playlist ma le tiene nel db
+```
+
+- `DELETE` di una Canzone (`/api/delete/song/5`): 
+```JSON
+"Canzone cancellata con successo."
+```

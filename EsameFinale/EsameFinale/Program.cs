@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Aggiunge i servizi per Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -39,20 +38,7 @@ app.MapGet("/api/read/playlist", async (LibreriaContext db) =>
         .Include(p => p.Elenco)
         .ToListAsync();
 
-    var result = tuttePlaylist.Select(p => new
-    {
-        Titolo = p.Titolo,
-        Autore = p.Autore,
-        Elenco = p.Elenco.Select(c => new
-        {
-            Titolo = c.Titolo,
-            Durata = c.Durata,
-            Nome = c.NomeAutore,
-            Cognome = c.CognomeAutore
-        }).ToList()
-    });
-
-return Results.Ok(result);
+return Results.Ok(tuttePlaylist);
 })
 .WithOpenApi();
 
@@ -60,15 +46,7 @@ app.MapGet("/api/read/songs", async (LibreriaContext db) =>
 {
     var elenco = await db.Canzoni.ToListAsync();
 
-    var result = elenco.Select(c => new
-    {
-        Titolo = c.Titolo,
-        Durata = c.Durata,
-        Nome = c.NomeAutore,
-        Cognome = c.CognomeAutore
-    });
-
-    return Results.Ok(result);
+    return Results.Ok(elenco);
 })
 .WithOpenApi();
 #endregion
@@ -83,20 +61,7 @@ app.MapGet("/api/read/playlist/{id}", async (int id, LibreriaContext db) =>
 
     if (playlist != null)
     {
-        var result = new
-        {
-            Titolo = playlist.Titolo,
-            Autore = playlist.Autore,
-            Elenco = playlist.Elenco.Select(c => new
-            {
-                Titolo = c.Titolo,
-                Durata = c.Durata,
-                Nome = c.NomeAutore,
-                Cognome = c.CognomeAutore
-            }).ToList()
-        };
-
-        return Results.Ok(result);
+        return Results.Ok(playlist);
     }
     return Results.NotFound();
 
@@ -108,15 +73,7 @@ app.MapGet("/api/read/song/{id}", async (int id, LibreriaContext db) =>
     Canzone? c = await db.Canzoni.FindAsync(id);
     if (c != null)
     {
-        var result = new
-        {
-            Titolo = c.Titolo,
-            Durata = c.Durata,
-            Nome = c.NomeAutore,
-            Cognome = c.CognomeAutore
-        };
-
-        return Results.Ok(result);
+        return Results.Ok(c);
     }
     return Results.NotFound();
 })
@@ -131,20 +88,7 @@ app.MapPost("/api/create/playlist", async (LibreriaContext db, Playlist p) =>
     await db.SaveChangesAsync();
     if (p != null)
     {
-        var result = new
-        {
-            Id = p.IdPlaylist,
-            Titolo = p.Titolo,
-            Autore = p.Autore,
-            Elenco = p.Elenco.Select(c => new
-            {
-                Titolo = c.Titolo,
-                Durata = c.Durata,
-                Nome = c.NomeAutore,
-                Cognome = c.CognomeAutore
-            }).ToList()
-        };
-        return Results.Created($"/api/read/onePlaylist/{result.Id}", result);
+        return Results.Created($"/api/read/onePlaylist/{p.IdPlaylist}", p);
     }
 
     return Results.NotFound();
@@ -156,15 +100,7 @@ app.MapPost("/api/create/song", async (LibreriaContext db, Canzone c)  =>
 {
     db.Canzoni.Add(c);
     await db.SaveChangesAsync();
-    var result = new
-    {
-        Id = c.IdCanzone,
-        Titolo = c.Titolo,
-        Durata = c.Durata,
-        Nome = c.NomeAutore,
-        Cognome = c.CognomeAutore
-    };
-    return Results.Created($"/api/read/song/{result.Id}", result);
+    return Results.Created($"/api/read/song/{c.IdCanzone}", c);
 })
 .WithOpenApi();
 
@@ -174,10 +110,18 @@ app.MapPost("/api/create/song", async (LibreriaContext db, Canzone c)  =>
 app.MapDelete("/api/delete/playlist/{id}", async (int id, LibreriaContext db) =>
 {
     var playlist = await db.Playlists
+            .Include(p => p.Elenco)
             .FirstOrDefaultAsync(p => p.IdPlaylist == id);
 
     if (playlist == null)
         return Results.NotFound();
+    if (playlist.Elenco != null && playlist.Elenco.Any())
+    {
+        foreach (var canzone in playlist.Elenco)
+            canzone.PlaylistId = null;
+    }
+
+    await db.SaveChangesAsync();
 
     db.Playlists.Remove(playlist);
     await db.SaveChangesAsync();
@@ -229,20 +173,9 @@ app.MapPut("/api/update/playlist/{id}", async (int id, LibreriaContext db, Playl
 
     await db.SaveChangesAsync();
 
-    var result = new
-    {
-        Titolo = playlist.Titolo,
-        Autore = playlist.Autore,
-        Elenco = playlist.Elenco.Select(c => new
-        {
-            Titolo = c.Titolo,
-            Durata = c.Durata,
-            Nome = c.NomeAutore,
-            Cognome = c.CognomeAutore
-        }).ToList()
-    };
 
-    return Results.Ok(result);
+
+    return Results.Ok(playlist);
 })
 .WithOpenApi();
 
@@ -261,15 +194,7 @@ app.MapPut("/api/update/song/{id}", async (int id, LibreriaContext db, Canzone c
     c.PlaylistId = cAggiorna.PlaylistId;
     await db.SaveChangesAsync();
 
-    var result = new
-    {
-        Titolo = c.Titolo,
-        Durata = c.Durata,
-        Nome = c.NomeAutore,
-        Cognome = c.CognomeAutore
-    };
-
-    return Results.Ok(result);
+    return Results.Ok(c);
 })
 .WithOpenApi();
 
