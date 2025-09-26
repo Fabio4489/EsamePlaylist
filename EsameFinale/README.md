@@ -1,6 +1,18 @@
-# ESAME FINALE:
-## Progetto: Minimal API gestione delle playlist.
-### Le due Classi: 
+# Progetto: Minimal API gestione delle playlist.
+
+## Indice
+- [1. Diagrama UML](#1-diagramma-uml)
+- [2. Le due Classi](#2-le-due-classi)
+- [3. Le principali operazioni CRUD](#3-le-principali-operazioni-crud)
+- [4. Due tecnologie](#4-due-tecnologie)
+  - [4.1. *DATABASE*](#41-database)
+  - [4.2. *OPENAPI*](#42-openapi)
+- [5. Le risposte alle chiamate](#5-le-risposte-alle-chiamate)
+
+## 1. Diagramma UML
+![alt text](image.png)
+
+## 2. Le due Classi
 Questo progetto, come richiesto da consegna, nasce con la creazione di:
 - ***PLAYLIST***, con i seguenti attiributi:
 ```csharp
@@ -31,7 +43,8 @@ Questo progetto, come richiesto da consegna, nasce con la creazione di:
             // Campo che funge da chiave secondaria.
         
 ```
-### Le principali operazioni CRUD 
+## 3. Le principali operazioni CRUD
+
 In seguito il progetto continua con l'implementazione, per ogni classe, delle operazioni CRUD.
 - **GET - Read**: 
     - Get tutte le Playlist, con annesse le canzoni inserite negli elenchi;
@@ -54,10 +67,10 @@ In un vecchio commit si può vedere che ho applicato i `DTO`, così da andare a 
 
 Solo che adesso(Sesto Commit), dato che gran parte degli end point lavorano per ID ho preferito togliere i DTO così da per poter lavorare in modo più chiaro e meno incasinato (altrimenti dovevo andare a tentativi sugli ID).
 
-### Due tecnologie
+## 4. Due tecnologie
 
 Inoltre ho utilizzato 2 tecnologie: 
-- *DATABASE*: 
+### 4.1. *DATABASE*
 
     Ho usato il db sqlite, con il controllo dei dati gestito da EF (Entity Framework).
 ```csharp
@@ -103,7 +116,7 @@ Nelle operazioni CRUD:
     // L'operazione deve essere Awayt-Async dato che ci devono arrivare le conferme o gli errori dal DB prima di poter dare delle risposte all'utente.
 ```
 
-- *OPENAPI*: 
+### 4.2. *OPENAPI* 
     Ho implementato questo pacchetto che mi ha permesso di lavorare anche senza postman.
 
 ```csharp 
@@ -121,8 +134,7 @@ Nelle operazioni CRUD:
     }
 ```
 ---
-# Le risposte alle chiamate (in JSON, da swagger):
-
+## 5. Le risposte alle chiamate
 
 - `POST` di una Playlist (`/api/create/playlist`): 
 ```JSON
